@@ -1,0 +1,192 @@
+<html>
+    <head>
+        <style>
+@charset "UTF-8";
+@font-face {
+  font-family: "Source Sans Pro";
+  src: url("templates/generic/fonts/SourceSansPro-Regular.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Pacifico";
+  src: url("templates/generic/fonts/Pacifico-Regular.ttf") format("ttf");
+}
+@page {
+    margin: 3cm;
+    @bottom-left {
+        color: #e3000b;
+        font-family: Pacifico;
+        content: '♥ Thank you!';
+    }
+    @bottom-right {
+        color: #aa99aa;
+        content: 'Judo und Ju Jitsu Club Aarau | Delfterstrasse 44 | 5004 Aarau';
+        font-size: 9pt;
+    }
+}
+
+html {
+    color: #14213d;
+    font-family: Source Sans Pro;
+    font-size: 11pt;
+    line-height: 1.6;
+}
+
+html body {
+    margin: 0;
+}
+
+html p {
+    text-align: justify;
+}
+
+html #logo {
+    height: 1.7cm;
+    position: absolute;
+    right: 0;
+    top: -1cm;
+}
+
+html address {
+    font-style: normal;
+    white-space: pre-line;
+}
+
+html address#from {
+    color: #aa99aa;
+}
+
+html address#to {
+    margin-top: 2.8cm;
+    text-align: left;
+}
+
+html dl {
+    text-align: right;
+    margin-top: -1.9cm;
+    margin-bottom: 2.4cm;
+}
+
+html dl dt, html dl dd {
+    display: inline;
+    margin: 0;
+    position: absolute;
+    right: 0;
+}
+
+html dl dt {
+    position: absolute;
+    right: 2cm;
+    color: #aa99aa;
+}
+
+
+html dl dt::after {
+    content: ':';
+}
+
+html table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+html table th {
+    border-bottom: .2mm solid #aa99aa;
+    color: #aa99aa;
+    font-size: 10pt;
+    font-weight: 400;
+    padding-bottom: .25cm;
+    text-transform: uppercase;
+}
+
+html table td {
+    padding-top: 1mm;
+}
+
+html table th:first-of-type, html table td:first-of-type {
+    text-align: left;
+}
+
+html table th:last-of-type, html table td:last-of-type {
+    text-align: right;
+}
+
+html table#total {
+    background: #f6f6f6;
+    border-color: #f6f6f6;
+    border-style: solid;
+    border-width: 0.5cm 3cm;
+    bottom: 0;
+    font-size: 15pt;
+    margin: 0 -3cm;
+    margin-bottom: -0.5cm;
+    position: absolute;
+    width: 18cm;
+}
+
+html table#total tr td {
+    vertical-align: top;
+}
+
+html #small-address {
+    margin-top: 0.2cm;
+    margin-bottom: 0.2cm;
+    font-size: 10pt;
+    line-height: 1rem;
+}
+        </style>
+    </head>
+    <body>
+        <img id="logo" src="templates/generic/logo.svg" />
+        <address id="to">
+        </address>
+
+
+
+        <p>
+            Ich möchte darauf hinweisen, dass der Beitrag auch dann geschuldet ist, wenn keine Trainings besucht werden. Ein Austritt kann jeweils bis zum 31.12 des Vorjahres schriftlich beim Vorstand eingereicht werden und wird für den Beitrag des Folgejahres berücksichtigt.
+        </p>
+
+        <p>
+            Bei Fragen erreichst Du mich unter <strong>079 960 71 30</strong> oder <strong>kassier@jjjcaarau.ch</strong>.
+        </p>
+
+        <p>
+            Liebe Grüsse und viel Spass beim weiteren Trainieren<br>
+            Noah (Kassier)
+        </p>
+
+        <table>
+            <thead>
+                <th>Posten</th>
+                <th>Betrag</th>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+        <table id="total">
+            <thead>
+                <th>Zahlbar bis</th>
+                <th>Kontoinformation</th>
+                <th>Total</th>
+            </thead>
+            <tbody>
+                <tr>
+                <td></td>
+                <td>
+                    IBAN CH94 0588 1077 2509 6100 0<br>
+                    <p id="small-address">
+                        Judo und Ju Jitsu Club Aarau<br>
+                        Delfterstrasse 44<br>
+                        5004 Aarau
+                    </p>
+                </td>
+                <td>
+                CHF
+                </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
