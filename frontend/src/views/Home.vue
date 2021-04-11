@@ -3,6 +3,11 @@
     <b-row>
       <b-col>
         <b-form>
+          <label for="language">Choose a date</label>
+          <b-form-select id="language" v-model="invoice.language" class="mb-3">
+            <b-form-select-option value="en-US">English</b-form-select-option>
+            <b-form-select-option value="de-DE">Deutsch</b-form-select-option>
+          </b-form-select>
           <label for="example-datepicker">Choose a date</label>
           <b-form-datepicker
             id="example-datepicker"
