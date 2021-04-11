@@ -1,56 +1,159 @@
 <template>
-  <b-container id="content">
+  <b-container fluid id="content">
     <b-row>
       <b-col>
         <b-form>
-          <label for="language">Choose a date</label>
-          <b-form-select id="language" v-model="invoice.language" class="mb-3">
-            <b-form-select-option value="en-US">English</b-form-select-option>
-            <b-form-select-option value="de-DE">Deutsch</b-form-select-option>
-          </b-form-select>
-          <label for="example-datepicker">Choose a date</label>
-          <b-form-datepicker
-            id="example-datepicker"
-            v-model="invoice.date"
-            class="mb-2"
-          ></b-form-datepicker>
+          <b-form-group description="Language" label-for="language">
+            <b-form-select id="language" v-model="invoice.language" class="mb-3">
+              <b-form-select-option value="en-US">English</b-form-select-option>
+              <b-form-select-option value="de-DE">Deutsch</b-form-select-option>
+            </b-form-select>
+          </b-form-group>
+
+          <b-form-group description="Invoice Date" label-for="invoice-datepicker">
+            <b-form-datepicker
+              id="invoice-datepicker"
+              v-model="invoice.date"
+              class="mb-2"
+            ></b-form-datepicker>
+          </b-form-group>
+
+          <b-form-group description="Due date" label-for="due-datepicker">
+            <b-form-datepicker
+              id="due-datepicker"
+              v-model="invoice.due"
+              class="mb-2"
+            ></b-form-datepicker>
+          </b-form-group>
+
           <b-form-group
-            id="fieldset-1"
-            description="Let us know your name."
-            label="Enter your name"
-            label-for="input-1"
-            valid-feedback="Thank you!"
-            invalid-feedback="Please specify a title."
-            :state="invoice.title.length > 0"
+            description="Invoice Number"
+            label-for="invoice-no"
+            invalid-feedback="Please specify an invoice number."
+            :state="invoice.no.length > 0"
           >
             <b-form-input
-              id="input-1"
-              v-model="invoice.title"
-              :state="invoice.title.length > 0"
+              id="invoice-no"
+              v-model="invoice.no"
+              :state="invoice.no.length > 0"
               trim
             ></b-form-input>
           </b-form-group>
+
+          <b-form-group
+            description="Customer Address"
+            label-for="customer-address"
+            invalid-feedback="Please specify an invoice number."
+            :state="invoice.address.length > 0"
+          >
+            <b-form-textarea
+              id="customer-address"
+              v-model="invoice.address"
+              :state="invoice.address.length > 0"
+              trim
+              style="height: 7em;"
+            ></b-form-textarea>
+          </b-form-group>
+
+          <b-form-group
+            description="Contact Person"
+            label-for="contact-person"
+            invalid-feedback="Please specify a contact person."
+            :state="invoice.contact.length > 0"
+          >
+            <b-form-input
+              id="Contact Person"
+              v-model="invoice.contact"
+              :state="invoice.contact.length > 0"
+              trim
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group description="Customer Reference" label-for="customer-reference">
+            <b-form-input id="customer-reference" v-model="invoice.reference" trim></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            description="Text"
+            label-for="text"
+            invalid-feedback="Please specify an invoice number."
+            :state="invoice.text.length > 0"
+          >
+            <b-form-textarea
+              id="text"
+              v-model="invoice.text"
+              :state="invoice.text.length > 0"
+              trim
+              style="height: 15em;"
+            ></b-form-textarea>
+          </b-form-group>
+
           <b-container v-for="position in invoice.positions" :key="position">
-            <b-form-group
-              id="fieldset-1"
-              description="Let us know your name."
-              label="Enter your name"
-              label-for="input-1"
-              valid-feedback="Thank you!"
-              invalid-feedback="Please specify a position description."
-              :state="position.text.length > 0"
-            >
-              <b-form-input
-                id="input-1"
-                v-model="position.text"
-                :state="position.text.length > 0"
-                trim
-              ></b-form-input>
-            </b-form-group>
+            <b-row>
+              <b-col>
+                <b-form-group
+                  description="Description"
+                  invalid-feedback="Please specify a position description."
+                  :state="position.text.length > 0"
+                >
+                  <b-form-input
+                    v-model="position.text"
+                    :state="position.text.length > 0"
+                    trim
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                  description="Count"
+                  invalid-feedback="Please select a count > 0."
+                  :state="position.count > 0"
+                >
+                  <b-form-input
+                    v-model="position.count"
+                    :state="position.count > 0"
+                    trim
+                    type="number"
+                    number
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                  description="Cost per piece"
+                  invalid-feedback="Please select a cost > 0."
+                  :state="position.cost > 0"
+                >
+                  <b-form-input
+                    v-model="position.cost"
+                    :state="position.cost > 0"
+                    trim
+                    type="number"
+                    number
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group
+                  description="Currency"
+                  invalid-feedback="Please specify a currency."
+                  :state="position.currency.length > 0"
+                >
+                  <b-form-input
+                    v-model="position.currency"
+                    :state="position.currency.length > 0"
+                    trim
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-row>
           </b-container>
+          <b-button class="mb-5" size="sm" variant="outline-primary" @click="addPosition"
+            >Add Position</b-button
+          >
         </b-form>
       </b-col>
-      <b-col>
+      <b-col class="col-100">
         <div id="pdf">
           <pdf :src="preview"></pdf>
         </div>
@@ -103,12 +206,12 @@ import axios from 'axios';
         date: today.toISOString().split('T')[0],
         due: due.toISOString().split('T')[0],
         title: 'TATA',
-        address: 'ABB Schweiz AG\nSAS-01\nPostfach 1946\n5401 Baden\n',
+        address: 'ABB Schweiz AG\nSAS-01\nPostfach 1946\n5401 Baden',
         no: 'RE19-24',
         contact: 'Noah Hüsser',
         reference: '4500592413',
         text:
-          'Ich möchte darauf hinweisen, dass der Beitrag auch dann geschuldet ist, wenn keine Trainings besucht werden. Ein Austritt kann jeweils bis zum 31.12 des Vorjahres schriftlich beim Vorstand eingereicht werden und wird für den Beitrag des Folgejahres berücksichtigt.',
+          'Sehr geehrte Damen und Herren\n\nVielen Dank für das entgegengebrachte Vertrauen und die Beauftragung mit der Softwareentwicklung. Gemäss Offerte 19-2019 erlauben wir uns, Ihnen die untenstehenden Leistungen in Rechnung zu stellen.',
         positions: [
           {
             text: 'Test',
@@ -140,20 +243,32 @@ import axios from 'axios';
       deep: true,
     },
   },
+  methods: {
+    addPosition() {
+      this.$data.invoice.positions.push({
+        text: 'Test',
+        count: 42,
+        cost: 120,
+        currency: 'CHF',
+        vat_included: false,
+        vat_must: true,
+      });
+    },
+  },
 })
 export default class Home extends Vue {}
 </script>
 
 <style socped lang="scss">
 #content {
-  height: calc(100% - 84px);
+  min-height: calc(100% - 84px);
 }
 
 .row {
-  height: 100%;
+  min-height: 100%;
 }
 
-.col {
+.col-100 {
   height: 100%;
 }
 

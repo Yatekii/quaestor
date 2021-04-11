@@ -165,12 +165,7 @@ html #small-address {
         <div class="underline"></div>
 
         <p>
-            Sehr geehrte Damen und Herren
-            <br>
-            <br>
-            Vielen Dank für das entgegengebrachte Vertrauen und die Beauftragung mit der Softwareentwicklung.
-            Gemäss Offerte 19-2019 erlauben wir uns, Ihnen die untenstehenden Leistungen in Rechnung zu
-            stellen.
+            {{ data.text }}
         </p>
 
         <table>
