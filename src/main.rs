@@ -18,7 +18,7 @@ use rocket::{
 use rocket_contrib::{json::Json, serve::StaticFiles};
 use serde::{Deserialize, Serialize};
 use tokio::{
-    io::{AsyncWriteExt, BufWriter},
+    io::{AsyncReadExt, AsyncWriteExt, BufWriter},
     process::{ChildStdout, Command},
 };
 
@@ -27,19 +27,63 @@ fn index() -> Redirect {
     Redirect::to("/index.html")
 }
 
-#[get("/get/<hash>")]
-async fn get<'a>(hash: String) -> Result<Response<'a>, tokio::io::Error> {
-    let json = base64::decode(hash).unwrap();
-    println!("{}", String::from_utf8_lossy(&json));
-    let json = serde_json::from_slice(&json).unwrap();
-    let stdout = generate_pdf(&json).await?;
-    println!("{}", stdout.0);
+#[get("/get/<invoice>/<version>")]
+async fn get<'a>(
+    invoice: String,
+    version: Option<String>,
+) -> Result<Response<'a>, tokio::io::Error> {
+    let data = tokio::fs::File::open(format!(
+        "invoices/{}/{}/{}",
+        invoice,
+        version.unwrap_or("0".into()),
+        "invoice.pdf"
+    ));
+
     let response = rocket::Response::build()
         .header(ContentType::new("application", "pdf"))
-        .streamed_body(stdout.1)
+        .streamed_body(data.await?)
         .ok();
 
     return response;
+}
+
+#[derive(Serialize)]
+struct List {
+    invoices: Vec<Invoice>,
+}
+
+#[derive(Serialize)]
+struct Invoice {
+    versions: Vec<String>,
+    name: String,
+}
+
+#[get("/list")]
+async fn list<'a>() -> Result<Json<List>, tokio::io::Error> {
+    let mut entries = std::fs::read_dir("invoices")
+        .unwrap()
+        .map(|e| e.unwrap())
+        .collect::<Vec<_>>();
+    entries.sort_by_key(|e| e.path());
+
+    let mut invoices = Vec::new();
+    for entry in entries {
+        let mut versions = Vec::new();
+        let mut entries = std::fs::read_dir(entry.path())
+            .unwrap()
+            .map(|e| e.unwrap())
+            .collect::<Vec<_>>();
+        entries.sort_by_key(|e| e.path());
+        for entry in entries {
+            versions.push(entry.file_name().to_string_lossy().to_string());
+        }
+        invoices.push(Invoice {
+            versions,
+            name: entry.file_name().to_string_lossy().into(),
+        });
+    }
+
+    Ok(Json(List { invoices }))
 }
 
 #[post("/generate", data = "<data>")]
@@ -54,8 +98,46 @@ async fn generate<'a>(data: Json<GenerateData>) -> Result<Response<'a>, tokio::i
     return response;
 }
 
+#[post("/store", data = "<data>")]
+async fn store<'a>(data: Json<GenerateData>) -> Result<(), tokio::io::Error> {
+    let mut stdout = generate_pdf(&data.0).await?;
+
+    let dir = if let Ok(entries) = std::fs::read_dir(format!("invoices/{}", data.0.no)) {
+        let mut entries: Vec<_> = entries.map(|e| e.unwrap()).collect();
+        entries.sort_by_key(|e| e.path());
+        let v: usize = entries[entries.len() - 1]
+            .file_name()
+            .to_string_lossy()
+            .to_string()
+            .parse()
+            .unwrap();
+
+        let dir = format!("invoices/{}/{}", data.0.no, v + 1);
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    } else {
+        let dir = format!("invoices/{}/0", data.0.no);
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    };
+
+    let mut bytes = Vec::new();
+    stdout.1.read_to_end(&mut bytes).await?;
+
+    std::fs::write(format!("{}/{}", dir, "invoice.pdf"), bytes).unwrap();
+    let json = serde_json::to_string_pretty(&data.0).unwrap();
+    std::fs::write(format!("{}/{}", dir, "data.json"), json).unwrap();
+
+    Ok(())
+}
+
 #[options("/generate")]
 async fn generate_preflight() -> Result<(), ()> {
+    Ok(())
+}
+
+#[options("/store")]
+async fn store_preflight() -> Result<(), ()> {
     Ok(())
 }
 
@@ -85,7 +167,18 @@ impl Fairing for CORS {
 fn rocket() -> Rocket {
     rocket::ignite()
         .attach(CORS)
-        .mount("/", routes![index, get, generate, generate_preflight])
+        .mount(
+            "/",
+            routes![
+                index,
+                get,
+                generate,
+                store,
+                generate_preflight,
+                store_preflight,
+                list
+            ],
+        )
         .mount("/", StaticFiles::from("frontend/public"))
 }
 

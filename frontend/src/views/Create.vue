@@ -2,6 +2,11 @@
   <b-container fluid id="content" style="padding-left: 10em; padding-right: 10em;">
     <b-row>
       <b-col>
+        <b-button class="mb-5" size="sm" variant="outline-success" @click="save">Save</b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
         <b-form>
           <b-form-group description="Language" label-for="language">
             <b-form-select id="language" v-model="invoice.language" class="mb-3">
@@ -165,13 +170,6 @@
         </div>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col>
-        <div id="pdf">
-          <pdf :src="preview"></pdf>
-        </div>
-      </b-col>
-    </b-row>
   </b-container>
 </template>
 
@@ -206,8 +204,6 @@ import draggable from 'vuedraggable';
 
     return {
       preview: undefined,
-      previewUrl:
-        'http://localhost:8000/get/eyJkYXRlIjoiMjAyMS0wNC0wOVQyMjowMDowMC4wMDBaIiwidGl0bGUiOiIxVEFUQTEiLCJhZGRyZXNzIjoiQUJCIFNjaHdlaXogQUdcblNBUy0wMVxuUG9zdGZhY2ggMTk0NlxuNTQwMSBCYWRlblxuIiwibm8iOiJSRTE5LTI0IiwiY29udGFjdCI6Ik5vYWggSMO8c3NlciIsInJlZmVyZW5jZSI6IjQ1MDA1OTI0MTMiLCJ0ZXh0IjoiSWNoIG3DtmNodGUgZGFyYXVmIGhpbndlaXNlbiwgZGFzcyBkZXIgQmVpdHJhZyBhdWNoIGRhbm4gZ2VzY2h1bGRldCBpc3QsIHdlbm4ga2VpbmUgVHJhaW5pbmdzIGJlc3VjaHQgd2VyZGVuLiBFaW4gQXVzdHJpdHQga2FubiBqZXdlaWxzIGJpcyB6dW0gMzEuMTIgZGVzIFZvcmphaHJlcyBzY2hyaWZ0bGljaCBiZWltIFZvcnN0YW5kIGVpbmdlcmVpY2h0IHdlcmRlbiB1bmQgd2lyZCBmw7xyIGRlbiBCZWl0cmFnIGRlcyBGb2xnZWphaHJlcyBiZXLDvGNrc2ljaHRpZ3QuIiwicG9zaXRpb25zIjpbeyJ0ZXh0IjoiVGVzdCIsImNvdW50Ijo0MiwiY29zdCI6MTIwLCJjdXJlbmN5IjoiQ0hGIiwidmF0X2luY2x1ZGVkIjpmYWxzZSwidmF0X211c3QiOnRydWV9XX0=',
       invoice: {
         language: 'de-DE',
         date: today.toISOString().split('T')[0],
@@ -261,6 +257,12 @@ import draggable from 'vuedraggable';
         vat_included: false,
         vat_must: true,
       });
+    },
+    save() {
+      axios.post('http://localhost:8000/store', this.$data.invoice, {
+        responseType: 'arraybuffer',
+      });
+      // .then((response) => ());
     },
   },
 })
