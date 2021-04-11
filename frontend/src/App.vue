@@ -1,9 +1,13 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Create</router-link>
-      <router-link to="/list">List</router-link>
-    </div>
+    <b-container fluid id="nav" style="padding-left: 10em; padding-right: 10em;">
+      <b-row>
+        <b-col>
+          <router-link to="/">Create</router-link>&nbsp;
+          <router-link to="/list">List</router-link>
+        </b-col>
+      </b-row>
+    </b-container>
     <router-view />
   </div>
 </template>
