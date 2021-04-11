@@ -1,0 +1,9 @@
+total = Total
+position = Pos.
+price = Price
+amount = Amount
+invoice = Invoice
+description = Description
+due_on = Due on
+account_info = Account Info
+thank_you = Thank you

@@ -47,7 +47,14 @@
       </b-col>
       <b-col>
         <div id="pdf">
-          <pdf :src="previewUrl"></pdf>
+          <pdf :src="preview"></pdf>
+        </div>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <div id="pdf">
+          <pdf :src="preview"></pdf>
         </div>
       </b-col>
     </b-row>
@@ -57,6 +64,7 @@
 <script lang="ts">
 import pdf from 'vue-pdf';
 import { Component, Vue } from 'vue-property-decorator';
+import axios from 'axios';
 
 @Component({
   components: {
@@ -66,18 +74,43 @@ import { Component, Vue } from 'vue-property-decorator';
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+    setTimeout(() => {
+      axios
+        .post('http://localhost:8000/generate', this.$data.invoice, {
+          responseType: 'arraybuffer',
+        })
+        .then((response) => {
+          const data = new Uint8Array(response.data);
+          console.log(data);
+          this.$data.preview = pdf.createLoadingTask(data);
+        });
+    }, 1000);
+
+    const due = new Date();
+    due.setDate(today.getDate() + 30);
+
     return {
-      previewUrl: '',
+      preview: undefined,
+      previewUrl:
+        'http://localhost:8000/get/eyJkYXRlIjoiMjAyMS0wNC0wOVQyMjowMDowMC4wMDBaIiwidGl0bGUiOiIxVEFUQTEiLCJhZGRyZXNzIjoiQUJCIFNjaHdlaXogQUdcblNBUy0wMVxuUG9zdGZhY2ggMTk0NlxuNTQwMSBCYWRlblxuIiwibm8iOiJSRTE5LTI0IiwiY29udGFjdCI6Ik5vYWggSMO8c3NlciIsInJlZmVyZW5jZSI6IjQ1MDA1OTI0MTMiLCJ0ZXh0IjoiSWNoIG3DtmNodGUgZGFyYXVmIGhpbndlaXNlbiwgZGFzcyBkZXIgQmVpdHJhZyBhdWNoIGRhbm4gZ2VzY2h1bGRldCBpc3QsIHdlbm4ga2VpbmUgVHJhaW5pbmdzIGJlc3VjaHQgd2VyZGVuLiBFaW4gQXVzdHJpdHQga2FubiBqZXdlaWxzIGJpcyB6dW0gMzEuMTIgZGVzIFZvcmphaHJlcyBzY2hyaWZ0bGljaCBiZWltIFZvcnN0YW5kIGVpbmdlcmVpY2h0IHdlcmRlbiB1bmQgd2lyZCBmw7xyIGRlbiBCZWl0cmFnIGRlcyBGb2xnZWphaHJlcyBiZXLDvGNrc2ljaHRpZ3QuIiwicG9zaXRpb25zIjpbeyJ0ZXh0IjoiVGVzdCIsImNvdW50Ijo0MiwiY29zdCI6MTIwLCJjdXJlbmN5IjoiQ0hGIiwidmF0X2luY2x1ZGVkIjpmYWxzZSwidmF0X211c3QiOnRydWV9XX0=',
       invoice: {
-        date: today,
+        language: 'de-DE',
+        date: today.toISOString().split('T')[0],
+        due: due.toISOString().split('T')[0],
         title: 'TATA',
+        address: 'ABB Schweiz AG\nSAS-01\nPostfach 1946\n5401 Baden\n',
+        no: 'RE19-24',
+        contact: 'Noah Hüsser',
+        reference: '4500592413',
+        text:
+          'Ich möchte darauf hinweisen, dass der Beitrag auch dann geschuldet ist, wenn keine Trainings besucht werden. Ein Austritt kann jeweils bis zum 31.12 des Vorjahres schriftlich beim Vorstand eingereicht werden und wird für den Beitrag des Folgejahres berücksichtigt.',
         positions: [
           {
             text: 'Test',
             count: 42,
             cost: 120,
-            curency: 'CHF',
-            vat_included: true,
+            currency: 'CHF',
+            vat_included: false,
             vat_must: true,
           },
         ],
@@ -87,12 +120,17 @@ import { Component, Vue } from 'vue-property-decorator';
   watch: {
     invoice: {
       handler(newValue) {
-        console.log(JSON.stringify(this.$data.invoice));
-        console.log(btoa(JSON.stringify(this.$data.invoice)));
-        this.$data.previewUrl = `http://localhost:8000/get/${btoa(
-          JSON.stringify(this.$data.invoice),
-        )}`;
-        console.log(this.$data.previewUrl);
+        // const s = btoa(unescape(encodeURIComponent(JSON.stringify(this.$data.invoice))));
+        // this.$data.previewUrl = `http://localhost:8000/get/${s}`;
+        axios
+          .post('http://localhost:8000/generate', this.$data.invoice, {
+            responseType: 'arraybuffer',
+          })
+          .then((response) => {
+            const data = new Uint8Array(response.data);
+            console.log(data);
+            this.$data.preview = pdf.createLoadingTask(data);
+          });
       },
       deep: true,
     },

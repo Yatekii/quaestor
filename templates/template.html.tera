@@ -13,13 +13,13 @@
 @page {
     margin: 3cm;
     @bottom-left {
-        color: #e3000b;
+        color: #f44242;
         font-family: Pacifico;
-        content: '♥ Thank you!';
+        content: '{{ t(n="thank_you") }}!';
     }
     @bottom-right {
         color: #aa99aa;
-        content: 'Judo und Ju Jitsu Club Aarau | Delfterstrasse 44 | 5004 Aarau';
+        content: 'Technokrat GmbH | Unterrohrstrasse 5 | CH-8952 Schlieren | Switzerland';
         font-size: 9pt;
     }
 }
@@ -52,11 +52,11 @@ html address {
 }
 
 html address#from {
+    margin-top: 2.8cm;
     color: #aa99aa;
 }
 
 html address#to {
-    margin-top: 2.8cm;
     text-align: left;
 }
 
@@ -133,58 +133,92 @@ html #small-address {
     font-size: 10pt;
     line-height: 1rem;
 }
+
+#logo {
+    width: 15em;
+}
+
+.underline {
+    margin-top: -1em;
+    margin-bottom: 2em;
+    height: 1px;
+    width: 100%;
+    background: 
+        linear-gradient(
+            to right, 
+            #f44242,
+            white
+        );
+}
         </style>
     </head>
     <body>
-        <img id="logo" src="templates/generic/logo.svg" />
+        <img id="logo" src="templates/banner.svg" />
+
+        <address id="from">Technokrat GmbH | Unterrohrstrasse 5 | CH-8952 Dietikon</address>
+
         <address id="to">
+            {{ data.address }}
         </address>
 
-
-
-        <p>
-            Ich möchte darauf hinweisen, dass der Beitrag auch dann geschuldet ist, wenn keine Trainings besucht werden. Ein Austritt kann jeweils bis zum 31.12 des Vorjahres schriftlich beim Vorstand eingereicht werden und wird für den Beitrag des Folgejahres berücksichtigt.
-        </p>
+        <h3>{{ t(n="invoice") }} {{ data.no }}</h3>
+        <div class="underline"></div>
 
         <p>
-            Bei Fragen erreichst Du mich unter <strong>079 960 71 30</strong> oder <strong>kassier@jjjcaarau.ch</strong>.
-        </p>
-
-        <p>
-            Liebe Grüsse und viel Spass beim weiteren Trainieren<br>
-            Noah (Kassier)
+            Sehr geehrte Damen und Herren
+            <br>
+            <br>
+            Vielen Dank für das entgegengebrachte Vertrauen und die Beauftragung mit der Softwareentwicklung.
+            Gemäss Offerte 19-2019 erlauben wir uns, Ihnen die untenstehenden Leistungen in Rechnung zu
+            stellen.
         </p>
 
         <table>
             <thead>
-                <th>Posten</th>
-                <th>Betrag</th>
+                <th>{{ t(n="position") }}</th>
+                <th>{{ t(n="description") }}</th>
+                <th>{{ t(n="amount") }}</th>
+                <th>{{ t(n="price") }}</th>
+                <th>{{ t(n="total") }}</th>
             </thead>
             <tbody>
-                
+                {% for position in data.positions %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ position.text }}</td>
+                    <td>{{ position.count }}</td>
+                    <td>{{ position.cost }} {{ position.currency }}</td>
+                    <td>{{ position.count * position.cost }} {{ position.currency }}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
 
         <table id="total">
             <thead>
-                <th>Zahlbar bis</th>
-                <th>Kontoinformation</th>
-                <th>Total</th>
+                <th>{{ t(n="due_on") }}</th>
+                <th>{{ t(n="account_info") }}</th>
+                <th>{{ t(n="total") }}</th>
             </thead>
             <tbody>
                 <tr>
-                <td></td>
-                <td>
-                    IBAN CH94 0588 1077 2509 6100 0<br>
-                    <p id="small-address">
-                        Judo und Ju Jitsu Club Aarau<br>
-                        Delfterstrasse 44<br>
-                        5004 Aarau
-                    </p>
-                </td>
-                <td>
-                CHF
-                </td>
+                    <td>{{ data.due }}</td>
+                    <td>
+                        CH47 0900 0000 6119 7724 7<br>
+                    </td>
+                    <td>
+                    CHF
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=3>
+                        {# <p id="small-address">
+                            Technokrat GmbH |
+                            Unterrohrstrasse 5 |
+                            CH-8952 Schlieren |
+                            Switzerland
+                        </p> #}
+                    </td>
                 </tr>
             </tbody>
         </table>
