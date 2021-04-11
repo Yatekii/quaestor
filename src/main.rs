@@ -1,11 +1,12 @@
 mod tera_engine;
 
 use std::iter::FromIterator;
-use std::{collections::HashMap, process::Stdio, sync::Arc};
+use std::{collections::HashMap, process::Stdio};
 
 use fluent::bundle::FluentBundle;
 use fluent_bundle::{FluentArgs, FluentResource, FluentValue};
 use intl_memoizer::concurrent::IntlLangMemoizer;
+use pulldown_cmark::{html, Options, Parser};
 use rocket::{
     fairing::{Fairing, Info, Kind},
     get,
@@ -69,7 +70,7 @@ impl Fairing for CORS {
         }
     }
 
-    async fn on_response<'a>(&self, request: &'a Request<'_>, response: &mut Response<'a>) {
+    async fn on_response<'a>(&self, _request: &'a Request<'_>, response: &mut Response<'a>) {
         response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
         response.set_header(Header::new(
             "Access-Control-Allow-Methods",
@@ -100,14 +101,15 @@ pub struct GenerateData {
     reference: String,
     text: String,
     positions: Vec<Position>,
+    currency: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Position {
+    id: usize,
     text: String,
     count: f64,
     cost: f64,
-    currency: String,
     vat_included: bool,
     vat_must: bool,
 }
@@ -116,11 +118,31 @@ async fn generate_pdf(
     data: &GenerateData,
 ) -> Result<(std::process::ExitStatus, ChildStdout), tokio::io::Error> {
     println!("{:?}", data);
+
+    let total: f64 = data.positions.iter().map(|p| p.count * p.cost).sum();
+    let vat = total * 0.077;
+
     let translations = load_translation(&data.language);
     // here "ipinfo::Response" need also be changed to "ip2asn::Response" for free api calls
     let mut context = tera::Context::new();
     context.insert("data", data);
+
     let mut tera = tera::Tera::new("templates/*.tera").unwrap();
+
+    {
+        let mut options = Options::empty();
+        options.insert(Options::ENABLE_TABLES);
+        let parser = Parser::new_ext(&data.text, options);
+
+        let mut body = String::new();
+        html::push_html(&mut body, parser);
+        // context.insert("html_body", &body);
+        tera.add_raw_template("body.html", &body).unwrap();
+    }
+
+    context.insert("total", &total);
+    context.insert("vat", &vat);
+
     tera.register_function(
         "t",
         Box::new(
@@ -140,7 +162,7 @@ async fn generate_pdf(
                                 .into(),
                         )
                     })
-                    .ok_or(tera::Error::msg("hehe xd"))
+                    .ok_or(tera::Error::msg(format!("{} was not found!", n)))
             },
         ),
     );

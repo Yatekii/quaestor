@@ -20,3 +20,4 @@ fluent = "0.15.0"
 fluent-bundle = "0.15.0"
 unic-langid = { version = "0.9.0", features = ["macros"] }
 intl-memoizer = "0.5.1"
+pulldown-cmark = { version = "0.8.0", default-features = false }

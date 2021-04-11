@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid id="content">
+  <b-container fluid id="content" style="padding-left: 10em; padding-right: 10em;">
     <b-row>
       <b-col>
         <b-form>
@@ -87,66 +87,72 @@
               style="height: 15em;"
             ></b-form-textarea>
           </b-form-group>
+          <b-form-group
+            description="Currency"
+            invalid-feedback="Please specify a currency."
+            :state="invoice.currency.length > 0"
+          >
+            <b-form-input
+              v-model="invoice.currency"
+              :state="invoice.currency.length > 0"
+              trim
+            ></b-form-input>
+          </b-form-group>
 
-          <b-container v-for="position in invoice.positions" :key="position">
-            <b-row>
-              <b-col>
-                <b-form-group
-                  description="Description"
-                  invalid-feedback="Please specify a position description."
-                  :state="position.text.length > 0"
-                >
-                  <b-form-input
-                    v-model="position.text"
+          <b-container class="p-0 pt-4 pr-3 mb-4 border border-secondary rounded">
+            <draggable
+              v-model="invoice.positions"
+              group="people"
+              @start="drag = true"
+              @end="drag = false"
+            >
+              <b-row v-for="position in invoice.positions" :key="position.id">
+                <b-col>
+                  <h2 style="float:left"><b-icon icon="grip-vertical"></b-icon></h2>
+                  <b-form-group
+                    description="Description"
+                    invalid-feedback="Please specify a position description."
                     :state="position.text.length > 0"
-                    trim
-                  ></b-form-input>
-                </b-form-group>
-              </b-col>
-              <b-col>
-                <b-form-group
-                  description="Count"
-                  invalid-feedback="Please select a count > 0."
-                  :state="position.count > 0"
-                >
-                  <b-form-input
-                    v-model="position.count"
+                  >
+                    <b-form-input
+                      v-model="position.text"
+                      :state="position.text.length > 0"
+                      trim
+                    ></b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group
+                    description="Count"
+                    invalid-feedback="Please select a count > 0."
                     :state="position.count > 0"
-                    trim
-                    type="number"
-                    number
-                  ></b-form-input>
-                </b-form-group>
-              </b-col>
-              <b-col>
-                <b-form-group
-                  description="Cost per piece"
-                  invalid-feedback="Please select a cost > 0."
-                  :state="position.cost > 0"
-                >
-                  <b-form-input
-                    v-model="position.cost"
+                  >
+                    <b-form-input
+                      v-model="position.count"
+                      :state="position.count > 0"
+                      trim
+                      type="number"
+                      number
+                    ></b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group
+                    description="Cost per piece"
+                    invalid-feedback="Please select a cost > 0."
                     :state="position.cost > 0"
-                    trim
-                    type="number"
-                    number
-                  ></b-form-input>
-                </b-form-group>
-              </b-col>
-              <b-col>
-                <b-form-group
-                  description="Currency"
-                  invalid-feedback="Please specify a currency."
-                  :state="position.currency.length > 0"
-                >
-                  <b-form-input
-                    v-model="position.currency"
-                    :state="position.currency.length > 0"
-                    trim
-                  ></b-form-input>
-                </b-form-group>
-              </b-col>
-            </b-row>
+                  >
+                    <b-form-input
+                      v-model="position.cost"
+                      :state="position.cost > 0"
+                      trim
+                      type="number"
+                      number
+                    ></b-form-input>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </draggable>
           </b-container>
           <b-button class="mb-5" size="sm" variant="outline-primary" @click="addPosition"
             >Add Position</b-button
@@ -173,10 +179,12 @@
 import pdf from 'vue-pdf';
 import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
+import draggable from 'vuedraggable';
 
 @Component({
   components: {
     pdf,
+    draggable,
   },
   data() {
     const now = new Date();
@@ -189,7 +197,6 @@ import axios from 'axios';
         })
         .then((response) => {
           const data = new Uint8Array(response.data);
-          console.log(data);
           this.$data.preview = pdf.createLoadingTask(data);
         });
     }, 1000);
@@ -214,14 +221,15 @@ import axios from 'axios';
           'Sehr geehrte Damen und Herren\n\nVielen Dank für das entgegengebrachte Vertrauen und die Beauftragung mit der Softwareentwicklung. Gemäss Offerte 19-2019 erlauben wir uns, Ihnen die untenstehenden Leistungen in Rechnung zu stellen.',
         positions: [
           {
+            id: 0,
             text: 'Test',
             count: 42,
             cost: 120,
-            currency: 'CHF',
             vat_included: false,
             vat_must: true,
           },
         ],
+        currency: 'CHF',
       },
     };
   },
@@ -246,10 +254,10 @@ import axios from 'axios';
   methods: {
     addPosition() {
       this.$data.invoice.positions.push({
+        id: this.$data.invoice.positions.length,
         text: 'Test',
         count: 42,
         cost: 120,
-        currency: 'CHF',
         vat_included: false,
         vat_must: true,
       });
