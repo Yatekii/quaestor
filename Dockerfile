@@ -74,6 +74,6 @@ WORKDIR /app
 
 COPY --from=cargo-build /home/rust/src/target/x86_64-unknown-linux-musl/release/quaestor .
 COPY --from=node-build /app/dist ./dist
-COPY templates/ templates/
+COPY templates/ ./templates/
 
-CMD quaestor
+CMD cd /app && quaestor
