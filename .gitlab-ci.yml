@@ -15,7 +15,7 @@ before_script:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
 
-build-docker:
+build-docker:3
     tags:
         - dind
     stage: build
@@ -45,7 +45,7 @@ deploy-production:
         - envsubst < docker-compose.yml | ssh deploy@cloud.technokrat.ch "docker-compose -f - pull"
         - envsubst < docker-compose.yml | ssh deploy@cloud.technokrat.ch "docker-compose -f - stop"
         - envsubst < docker-compose.yml | ssh deploy@cloud.technokrat.ch "docker-compose -f - rm -f"
-        - envsubst < docker-compose.yml | ssh deploy@cloud.technokrat.ch "docker-compose -f - up -d $SERVICE_NAME-production"
+        - envsubst < docker-compose.yml | ssh deploy@cloud.technokrat.ch "docker-compose -f - up -d $SERVICE_NAME"
     environment:
         name: production
         url: technokrat.ch
