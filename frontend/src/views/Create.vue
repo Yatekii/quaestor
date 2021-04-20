@@ -1,21 +1,34 @@
 <template>
-  <b-container fluid id="content" style="padding-left: 10em; padding-right: 10em;">
+  <b-container
+    fluid
+    id="content"
+    style="padding-left: 10em; padding-right: 10em"
+  >
     <b-row>
       <b-col>
-        <b-button class="mb-5" size="sm" variant="outline-success" @click="save">Save</b-button>
+        <b-button class="mb-5" size="sm" variant="outline-success" @click="save"
+          >Save</b-button
+        >
       </b-col>
     </b-row>
     <b-row>
       <b-col>
         <b-form>
           <b-form-group description="Language" label-for="language">
-            <b-form-select id="language" v-model="invoice.language" class="mb-3">
+            <b-form-select
+              id="language"
+              v-model="invoice.language"
+              class="mb-3"
+            >
               <b-form-select-option value="en-US">English</b-form-select-option>
               <b-form-select-option value="de-DE">Deutsch</b-form-select-option>
             </b-form-select>
           </b-form-group>
 
-          <b-form-group description="Invoice Date" label-for="invoice-datepicker">
+          <b-form-group
+            description="Invoice Date"
+            label-for="invoice-datepicker"
+          >
             <b-form-datepicker
               id="invoice-datepicker"
               v-model="invoice.date"
@@ -56,7 +69,7 @@
               v-model="invoice.address"
               :state="invoice.address.length > 0"
               trim
-              style="height: 7em;"
+              style="height: 7em"
             ></b-form-textarea>
           </b-form-group>
 
@@ -74,8 +87,15 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-form-group description="Customer Reference" label-for="customer-reference">
-            <b-form-input id="customer-reference" v-model="invoice.reference" trim></b-form-input>
+          <b-form-group
+            description="Customer Reference"
+            label-for="customer-reference"
+          >
+            <b-form-input
+              id="customer-reference"
+              v-model="invoice.reference"
+              trim
+            ></b-form-input>
           </b-form-group>
 
           <b-form-group
@@ -89,7 +109,7 @@
               v-model="invoice.text"
               :state="invoice.text.length > 0"
               trim
-              style="height: 15em;"
+              style="height: 15em"
             ></b-form-textarea>
           </b-form-group>
           <b-form-group
@@ -104,7 +124,9 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-container class="p-0 pt-4 pr-3 mb-4 border border-secondary rounded">
+          <b-container
+            class="p-0 pt-4 pr-3 mb-4 border border-secondary rounded"
+          >
             <draggable
               v-model="invoice.positions"
               group="people"
@@ -113,7 +135,9 @@
             >
               <b-row v-for="position in invoice.positions" :key="position.id">
                 <b-col>
-                  <h2 style="float:left"><b-icon icon="grip-vertical"></b-icon></h2>
+                  <h2 style="float: left">
+                    <b-icon icon="grip-vertical"></b-icon>
+                  </h2>
                   <b-form-group
                     description="Description"
                     invalid-feedback="Please specify a position description."
@@ -159,7 +183,11 @@
               </b-row>
             </draggable>
           </b-container>
-          <b-button class="mb-5" size="sm" variant="outline-primary" @click="addPosition"
+          <b-button
+            class="mb-5"
+            size="sm"
+            variant="outline-primary"
+            @click="addPosition"
             >Add Position</b-button
           >
         </b-form>
@@ -190,7 +218,7 @@ import draggable from 'vuedraggable';
 
     setTimeout(() => {
       axios
-        .post('http://localhost:8000/generate', this.$data.invoice, {
+        .post(`${window.location.host}/generate`, this.$data.invoice, {
           responseType: 'arraybuffer',
         })
         .then((response) => {
@@ -235,7 +263,7 @@ import draggable from 'vuedraggable';
         // const s = btoa(unescape(encodeURIComponent(JSON.stringify(this.$data.invoice))));
         // this.$data.previewUrl = `http://localhost:8000/get/${s}`;
         axios
-          .post('http://localhost:8000/generate', this.$data.invoice, {
+          .post(`${window.location.host}/generate`, this.$data.invoice, {
             responseType: 'arraybuffer',
           })
           .then((response) => {
@@ -259,7 +287,7 @@ import draggable from 'vuedraggable';
       });
     },
     save() {
-      axios.post('http://localhost:8000/store', this.$data.invoice, {
+      axios.post(`${window.location.host}/store`, this.$data.invoice, {
         responseType: 'arraybuffer',
       });
       // .then((response) => ());

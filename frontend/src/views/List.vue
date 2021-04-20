@@ -13,7 +13,9 @@
             v-for="version in invoice.versions"
             :key="version"
             target="_BLANK"
-            :href="'localhost:8080/get/' + invoice.name + '/' + version"
+            :href="
+              window.location.host + '/get/' + invoice.name + '/' + version
+            "
             >v{{ version }},
           </a>
         </b-col>
@@ -35,7 +37,7 @@ import axios from 'axios';
   },
   methods: {
     list() {
-      axios.get('http://localhost:8000/list').then((response) => {
+      axios.get(`${window.location.host}/list`).then((response) => {
         this.$data.invoices = response.data.invoices;
       });
     },
@@ -43,7 +45,6 @@ import axios from 'axios';
 })
 export default class Home extends Vue {
   created() {
-    console.log('TET');
     (this as any).list();
   }
 }
