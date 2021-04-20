@@ -9,6 +9,13 @@
         <b-button class="mb-5" size="sm" variant="outline-success" @click="save"
           >Save</b-button
         >
+        <b-button
+          class="mb-5 ml-3"
+          size="sm"
+          variant="outline-success"
+          @click="download"
+          >Download</b-button
+        >
       </b-col>
     </b-row>
     <b-row>
@@ -288,10 +295,42 @@ import { API_URL } from '@/globals';
       });
     },
     save() {
-      axios.post(`${API_URL}/store`, this.$data.invoice, {
-        responseType: 'arraybuffer',
+      return axios
+        .post(`${API_URL}/store`, this.$data.invoice, {
+          responseType: 'arraybuffer',
+        })
+        .then((response) => {
+          this.$bvToast.toast('Successfully saved invoice.', {
+            title: 'Success!',
+            variant: 'success',
+            autoHideDelay: 5000,
+            appendToast: true,
+          });
+        })
+        .catch((response) => {
+          this.$bvToast.toast('Failed to save invoice.', {
+            title: 'Failure!',
+            variant: 'danger',
+            autoHideDelay: 5000,
+            appendToast: true,
+          });
+        });
+    },
+    download() {
+      (this as any).save().then((_: any) => {
+        axios
+          .post(`${API_URL}/generate`, this.$data.invoice, {
+            responseType: 'blob',
+          })
+          .then((response: any) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'invoice.pdf');
+            document.body.appendChild(link);
+            link.click();
+          });
       });
-      // .then((response) => ());
     },
   },
 })

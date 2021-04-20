@@ -32,6 +32,7 @@ import { API_URL } from '@/globals';
   data() {
     return {
       invoices: [],
+      API_URL,
     };
   },
   methods: {
