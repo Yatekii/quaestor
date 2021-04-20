@@ -16,7 +16,7 @@ services:
             - "traefik.http.routers.$SERVICE_NAME.rule=Host(`$SERVICE_DOMAIN`) || Host(`www.$SERVICE_DOMAIN`)"
             - "traefik.http.routers.$SERVICE_NAME.tls.certresolver=le"
             - "traefik.http.routers.$SERVICE_NAME.entrypoints=websecure"
-            - "traefik.http.services.$SERVICE_NAME.loadbalancer.server.port=8080"
+            - "traefik.http.services.$SERVICE_NAME.loadbalancer.server.port=8000"
             - "traefik.docker.network=web"
             - "traefik.enable=true"
         restart: "always"
