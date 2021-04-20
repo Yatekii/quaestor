@@ -33,7 +33,7 @@ RUN yarn build
 # Final Stage
 # ------------------------------------------------------------------------------
 
-FROM alpine:3.13
+FROM alpine:3.13 as runtime
 
 # Install weasyprint dependencies.
 RUN apk \

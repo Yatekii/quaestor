@@ -6,15 +6,17 @@ volumes:
     cache:
 services:
     $SERVICE_NAME:
-        image: "$CI_REGISTRY_IMAGE/app:$CI_COMMIT_BRANCH"
+        image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_BRANCH"
         container_name: "$SERVICE_NAME"
+        environment:
+            - "ROCKET_LOG_LEVEL=debug"
         networks:
             - web
         labels:
-            - "traefik.http.routers.$SERVICE_NAME-app.rule=Host(`$SERVICE_DOMAIN`) || Host(`www.$SERVICE_DOMAIN`)"
-            - "traefik.http.routers.$SERVICE_NAME-app.tls.certresolver=le"
-            - "traefik.http.routers.$SERVICE_NAME-app.entrypoints=websecure"
-            - "traefik.http.services.$SERVICE_NAME-app.loadbalancer.server.port=80"
+            - "traefik.http.routers.$SERVICE_NAME.rule=Host(`$SERVICE_DOMAIN`) || Host(`www.$SERVICE_DOMAIN`)"
+            - "traefik.http.routers.$SERVICE_NAME.tls.certresolver=le"
+            - "traefik.http.routers.$SERVICE_NAME.entrypoints=websecure"
+            - "traefik.http.services.$SERVICE_NAME.loadbalancer.server.port=80"
             - "traefik.docker.network=web"
             - "traefik.enable=true"
         restart: "always"
