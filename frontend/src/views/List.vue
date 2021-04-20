@@ -13,9 +13,7 @@
             v-for="version in invoice.versions"
             :key="version"
             target="_BLANK"
-            :href="
-              window.location.host + '/get/' + invoice.name + '/' + version
-            "
+            :href="`${API_URL}/get/${invoice.name}/${version}`"
             >v{{ version }},
           </a>
         </b-col>
@@ -27,6 +25,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
+import { API_URL } from '@/globals';
 
 @Component({
   components: {},
@@ -37,14 +36,14 @@ import axios from 'axios';
   },
   methods: {
     list() {
-      axios.get(`${window.location.host}/list`).then((response) => {
+      axios.get(`${API_URL}/list`).then((response) => {
         this.$data.invoices = response.data.invoices;
       });
     },
   },
 })
 export default class Home extends Vue {
-  created() {
+  created(): void {
     (this as any).list();
   }
 }

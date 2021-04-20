@@ -206,6 +206,7 @@ import pdf from 'vue-pdf';
 import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import draggable from 'vuedraggable';
+import { API_URL } from '@/globals';
 
 @Component({
   components: {
@@ -218,7 +219,7 @@ import draggable from 'vuedraggable';
 
     setTimeout(() => {
       axios
-        .post(`${window.location.host}/generate`, this.$data.invoice, {
+        .post(`${API_URL}/generate`, this.$data.invoice, {
           responseType: 'arraybuffer',
         })
         .then((response) => {
@@ -259,11 +260,11 @@ import draggable from 'vuedraggable';
   },
   watch: {
     invoice: {
-      handler(newValue) {
+      handler(_newValue) {
         // const s = btoa(unescape(encodeURIComponent(JSON.stringify(this.$data.invoice))));
         // this.$data.previewUrl = `http://localhost:8000/get/${s}`;
         axios
-          .post(`${window.location.host}/generate`, this.$data.invoice, {
+          .post(`${API_URL}/generate`, this.$data.invoice, {
             responseType: 'arraybuffer',
           })
           .then((response) => {
@@ -287,7 +288,7 @@ import draggable from 'vuedraggable';
       });
     },
     save() {
-      axios.post(`${window.location.host}/store`, this.$data.invoice, {
+      axios.post(`${API_URL}/store`, this.$data.invoice, {
         responseType: 'arraybuffer',
       });
       // .then((response) => ());
