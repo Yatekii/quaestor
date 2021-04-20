@@ -1,6 +1,10 @@
 <template>
   <div class="about">
-    <b-container fluid id="content" style="padding-left: 10em; padding-right: 10em;">
+    <b-container
+      fluid
+      id="content"
+      style="padding-left: 10em; padding-right: 10em"
+    >
       <h1>Invoices</h1>
       <b-row v-for="invoice in invoices" :key="invoice.name">
         <b-col>
@@ -40,7 +44,7 @@ import axios from 'axios';
 export default class Home extends Vue {
   created() {
     console.log('TET');
-    this.list();
+    (this as any).list();
   }
 }
 </script>

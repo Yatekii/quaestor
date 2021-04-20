@@ -1,0 +1,12 @@
+# Exclude everything by default
+*
+Dockerfile
+# Include selectively
+!templates
+!src
+!Cargo.toml
+!/home/rust/target/x86_64-unknown-linux-musl/release/quaestor
+!/app/dist
+!requirements.txt
+!frontend
+frontend/node_modules

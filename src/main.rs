@@ -11,9 +11,7 @@ use rocket::{
     fairing::{Fairing, Info, Kind},
     get,
     http::{ContentType, Header},
-    launch, options, post,
-    response::Redirect,
-    routes, Request, Response, Rocket,
+    launch, options, post, routes, Request, Response,
 };
 use rocket_contrib::{json::Json, serve::StaticFiles};
 use serde::{Deserialize, Serialize};
@@ -21,11 +19,6 @@ use tokio::{
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
     process::{ChildStdout, Command},
 };
-
-#[get("/")]
-fn index() -> Redirect {
-    Redirect::to("/index.html")
-}
 
 #[get("/get/<invoice>/<version>")]
 async fn get<'a>(
@@ -164,13 +157,13 @@ impl Fairing for CORS {
 }
 
 #[launch]
-fn rocket() -> Rocket {
-    rocket::ignite()
+fn rocket() -> _ {
+    rocket::build()
         .attach(CORS)
         .mount(
             "/",
             routes![
-                index,
+                // index,
                 get,
                 generate,
                 store,
@@ -179,7 +172,7 @@ fn rocket() -> Rocket {
                 list
             ],
         )
-        .mount("/", StaticFiles::from("frontend/public"))
+        .mount("/", StaticFiles::from("frontend/dist"))
 }
 
 #[derive(Debug, Serialize, Deserialize)]
