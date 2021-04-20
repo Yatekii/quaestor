@@ -172,6 +172,24 @@ html #small-address {
     margin-top: 2em;
     margin-bottom: 2em;
 }
+
+html table tr.total-no-vat {
+    border-top: .4mm solid #aa99aa;
+    border-bottom: .2mm solid #aa99aa;
+    padding-bottom: .25cm;
+}
+
+html table tr.vat {
+    border-bottom: .2mm solid #aa99aa;
+    padding-bottom: .25cm;
+}
+
+html table tr.total {
+    border-bottom: .4mm solid #f44242;
+    font-size: 10pt;
+    font-weight: 400;
+    padding-bottom: .25cm;
+}
         </style>
     </head>
     <body>
@@ -228,21 +246,21 @@ html #small-address {
                     <td>{{ position.count * position.cost }} {{ data.currency }}</td>
                 </tr>
                 {% endfor %}
-                <tr>
+                <tr class="total-no-vat">
                     <td></td>
                     <td>{{ t(n="total_excl_vat") }}</td>
                     <td></td>
                     <td></td>
                     <td>{{ total }} {{ data.currency }}</td>
                 </tr>
-                <tr>
+                <tr class="vat">
                     <td></td>
                     <td>{{ t(n="vat") }}</td>
                     <td></td>
                     <td></td>
                     <td>{{ vat }} {{ data.currency }}</td>
                 </tr>
-                <tr>
+                <tr class="total">
                     <td></td>
                     <td>{{ t(n="total") }}</td>
                     <td></td>
