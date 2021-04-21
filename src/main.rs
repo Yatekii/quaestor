@@ -188,6 +188,7 @@ pub struct GenerateData {
     text: String,
     positions: Vec<Position>,
     currency: String,
+    vat_rate: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -196,17 +197,15 @@ pub struct Position {
     text: String,
     count: f64,
     cost: f64,
-    vat_included: bool,
-    vat_must: bool,
 }
 
 async fn generate_pdf(
     data: &GenerateData,
 ) -> Result<(std::process::ExitStatus, ChildStdout), tokio::io::Error> {
-    println!("{:?}", data);
+    println!("{:#?}", data);
 
     let total: f64 = data.positions.iter().map(|p| p.count * p.cost).sum();
-    let vat = total * 0.077;
+    let vat = total * data.vat_rate / 100.0;
 
     let translations = load_translation(&data.language);
     // here "ipinfo::Response" need also be changed to "ip2asn::Response" for free api calls

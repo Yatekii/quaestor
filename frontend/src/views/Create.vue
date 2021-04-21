@@ -131,6 +131,23 @@
             ></b-form-input>
           </b-form-group>
 
+          <b-form-group description="VAT" label-for="add-vat">
+            <b-input-group>
+              <b-form-input
+                id="add-vat"
+                type="number"
+                number
+                v-model="invoice.vat_rate"
+                trim
+              ></b-form-input>
+              <b-input-group-append>
+                <b-input-group-text class="bg-transparent font-weight-bold">
+                  %
+                </b-input-group-text>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+
           <b-container
             class="p-0 pt-4 pr-3 mb-4 border border-secondary rounded"
           >
@@ -250,7 +267,7 @@ import { API_URL } from '@/globals';
         contact: 'Noah Hüsser',
         reference: '4500592413',
         text:
-          'Sehr geehrte Damen und Herren\n\nVielen Dank für das entgegengebrachte Vertrauen und die Beauftragung mit der Softwareentwicklung. Gemäss Offerte 19-2019 erlauben wir uns, Ihnen die untenstehenden Leistungen in Rechnung zu stellen.',
+          'Sehr geehrte Damen und Herren\n\nVielen Dank für das entgegengebrachte Vertrauen und die Beauftragung mit der Softwareentwicklung. Gemäss Offerte 19-2019 erlauben wir uns, Ihnen die untenstehenden Leistungen in Rechnung zu stellen.\n\nBest Grüsse  \nNoah Hüsser',
         positions: [
           {
             id: 0,
@@ -262,6 +279,7 @@ import { API_URL } from '@/globals';
           },
         ],
         currency: 'CHF',
+        vat_rate: 7.7,
       },
     };
   },

@@ -1,5 +1,4 @@
-// const API_URL = window.location.host;
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NODE_ENV === 'production' ? window.location.origin : 'http://localhost:8000';
 
 export {
   // eslint-disable-next-line import/prefer-default-export

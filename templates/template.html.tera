@@ -180,11 +180,11 @@ html table tr.total-no-vat {
 }
 
 html table tr.vat {
-    border-bottom: .2mm solid #aa99aa;
     padding-bottom: .25cm;
 }
 
 html table tr.total {
+    border-top: .4mm solid #aa99aa;
     border-bottom: .4mm solid #f44242;
     font-size: 10pt;
     font-weight: 400;
@@ -246,6 +246,7 @@ html table tr.total {
                     <td>{{ position.count * position.cost }} {{ data.currency }}</td>
                 </tr>
                 {% endfor %}
+                {% if data.vat_rate > 0 %}
                 <tr class="total-no-vat">
                     <td></td>
                     <td>{{ t(n="total_excl_vat") }}</td>
@@ -255,11 +256,12 @@ html table tr.total {
                 </tr>
                 <tr class="vat">
                     <td></td>
-                    <td>{{ t(n="vat") }}</td>
+                    <td>{{ t(n="vat") }} {{ data.vat_rate }}%</td>
                     <td></td>
                     <td></td>
                     <td>{{ vat }} {{ data.currency }}</td>
                 </tr>
+                {% endif %}
                 <tr class="total">
                     <td></td>
                     <td>{{ t(n="total") }}</td>
@@ -283,7 +285,7 @@ html table tr.total {
                         CH47 0900 0000 6119 7724 7<br>
                     </td>
                     <td>
-                    {{ data.currency }}
+                        {{ total + vat }} {{ data.currency }}
                     </td>
                 </tr>
                 <tr>

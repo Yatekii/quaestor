@@ -11,4 +11,4 @@ date_of_invoice = Date of invoice
 contact_person = Contact person
 reference = Your reference
 total_excl_vat = Total (excl. VAT)
-vat = VAT 7.7%
+vat = VAT

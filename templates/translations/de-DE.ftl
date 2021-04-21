@@ -11,4 +11,4 @@ date_of_invoice = Rechnungsdatum
 contact_person = Ansprechpartner
 reference = Ihre Referenz
 total_excl_vat = Summe (exkl. MWSt)
-vat = MWSt. 7.7%
+vat = MWSt.
