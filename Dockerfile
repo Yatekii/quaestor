@@ -76,4 +76,4 @@ COPY --from=cargo-build /home/rust/src/target/x86_64-unknown-linux-musl/release/
 COPY --from=node-build /app/dist ./frontend/dist
 COPY templates/ ./templates/
 
-CMD ./quaestor
+CMD . /venv/bin/activate && ./quaestor
